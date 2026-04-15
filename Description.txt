@@ -1,0 +1,6 @@
+DESCRIPTION
+
+
+This website provides insights into customer feedback and market trends by analyzing user reviews from e-commerce platforms. It uses natural language processing (NLP) techniques to perform sentiment analysis, classifying reviews as positive, negative, or neutral. Additionally, the system leverages data analytics and visualization tools to predict product trends based on user sentiments, ratings, and review frequency over time.
+
+The goal of the website is to help businesses and customers make informed decisions. Businesses can track the performance and perception of their products, while customers can view sentiment-based ratings to guide their purchases. The site features an interactive dashboard, review analysis tools, trend graphs, and real-time data updates.

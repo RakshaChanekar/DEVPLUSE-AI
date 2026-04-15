@@ -1,0 +1,354 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9;
+}
+
+.header-bot {
+    background: white;
+    padding: 15px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Logo */
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+    .logo img {
+        max-height: 40px;
+        margin-right: 10px;
+    }
+
+/* Search Box */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #f1f1f1;
+    padding: 8px;
+    border-radius: 20px;
+}
+
+    .search-box input {
+        border: none;
+        outline: none;
+        padding: 8px;
+        width: 200px;
+        background: transparent;
+    }
+
+    .search-box button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .search-box button:hover {
+            background: #0056b3;
+        }
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+    .nav-links a {
+        text-decoration: none;
+        color: #333;
+        padding: 10px;
+        font-size: 16px;
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+        .nav-links a:hover {
+            background: #007bff;
+            color: white;
+        }
+
+/* User Actions */
+.user-links {
+    display: flex;
+    gap: 15px;
+}
+
+    .user-links a {
+        text-decoration: none;
+        padding: 8px 15px;
+        border: 1px solid #007bff;
+        border-radius: 20px;
+        font-size: 14px;
+        color: #007bff;
+        transition: 0.3s;
+    }
+
+        .user-links a:hover {
+            background: #007bff;
+            color: white;
+        }
+
+/* Hamburger Menu */
+.menu-toggle {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    color: #333;
+}
+
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    text-align: center;
+    z-index: 999;
+}
+
+    .mobile-nav a {
+        padding: 10px;
+        display: block;
+        color: #333;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .mobile-nav a:hover {
+            background: #007bff;
+            color: white;
+        }
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .search-box {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-container {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+
+    .mobile-nav.active {
+        display: flex;
+    }
+}
+
+/* Modal Background */
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    background: #f0f0f0; /* Faint Blue Background */
+    color: #2c3e50;
+}
+
+/* Header */
+.modal-header {
+    background: #2196f3; /* Bright Blue */
+    color: white;
+    border-bottom: none;
+    padding: 15px;
+    text-align: center;
+}
+
+    .modal-header .close {
+        color: white;
+        opacity: 1;
+        font-size: 20px;
+    }
+
+/* Modal Body */
+.modal-body {
+    padding: 20px;
+}
+
+    /* Input Fields */
+    .modal-body .form-group {
+        margin-bottom: 15px;
+    }
+
+    .modal-body .form-control {
+        border-radius: 6px;
+        padding: 10px;
+        border: 1px solid #90caf9;
+        background: white;
+        color: #2c3e50;
+    }
+
+        .modal-body .form-control::placeholder {
+            color: rgba(44, 62, 80, 0.6);
+        }
+
+        .modal-body .form-control:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+
+/* Login Button */
+.right-w3l .form-control {
+    background: #2196f3;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .right-w3l .form-control:hover {
+        background: #1976d2;
+    }
+
+/* Remember Me & Checkbox */
+.sub-w3l {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.custom-control-label {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+/* Register Link */
+.dont-do {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+    .dont-do a {
+        color: #ff9800;
+        font-weight: bold;
+    }
+
+        .dont-do a:hover {
+            text-decoration: underline;
+        }
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .modal-dialog {
+        max-width: 90%;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+        .modal-body .form-control {
+            padding: 10px;
+        }
+
+    .right-w3l .form-control {
+        padding: 10px;
+    }
+}
+/*Card css*/
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #efebeb;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    color: #1e3a8a;
+}
+
+    .card img {
+        max-width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .card h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .card p {
+        color: #374151;
+    }
+
+.shop-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.amazon .shop-btn {
+    background-color: #ff9900;
+}
+
+.meesho .shop-btn {
+    background-color: #e91e63;
+}
+
+.flipkart .shop-btn {
+    background-color: #007bff;
+}
