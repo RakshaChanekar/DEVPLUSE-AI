@@ -6,7 +6,7 @@ function Dashboard() {
   const [result, setResult] = useState(null);
 
   const analyze = async () => {
-    const res = await axios.post("http://localhost:5000/api/analyze", { logs });
+    const res = axios.post("http://backend:5000/api/analyze", { logs });
     setResult(res.data);
   };
 
