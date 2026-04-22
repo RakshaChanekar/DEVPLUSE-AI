@@ -6,16 +6,21 @@ function Dashboard() {
   const [result, setResult] = useState(null);
 
   const analyze = async () => {
-    const res = axios.post("http://backend:5000/api/analyze", { logs });
-    setResult(res.data);
-  };
+    try {
+      const res = axios.post("http://localhost:5000/api/analyze", { logs });
 
+      setResult(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <div>
       <textarea
         placeholder="Paste logs here..."
         onChange={(e) => setLogs(e.target.value)}
       />
+
       <button onClick={analyze}>Analyze</button>
 
       {result && (
