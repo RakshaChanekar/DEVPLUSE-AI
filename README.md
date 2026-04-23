@@ -1,12 +1,12 @@
 # DevPulse AI
 
-DevPulse AI is a log analysis product that turns raw application logs, stack traces, and deployment failures into structured issue reports. It supports multi-issue detection, OpenAI-powered analysis, and a local fallback engine when no API key is configured.
+DevPulse AI is a log analysis product that turns raw application logs, stack traces, and deployment failures into structured issue reports. It supports multi-issue detection, Google AI Studio powered analysis, and a local fallback engine when no API key is configured.
 
 ## What is included
 
 - Polished React dashboard for issue triage
-- Express backend with OpenAI Responses API integration
-- Rule-based fallback analyzer when OpenAI is unavailable
+- Express backend with Google AI Studio Gemini integration
+- Rule-based fallback analyzer when Google AI Studio is unavailable
 - Docker setup for frontend and backend
 - Kubernetes manifests for frontend and backend deployments
 
@@ -20,11 +20,11 @@ Create a backend env file:
 cp backend/.env.example backend/.env
 ```
 
-Set your OpenAI key in `backend/.env`:
+Set your Google AI Studio key in `backend/.env`:
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-5-mini
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 If you do not add an API key, DevPulse still works with the local fallback analyzer.
@@ -67,11 +67,11 @@ Frontend: `http://localhost:3000`
 
 Backend: `http://localhost:5000`
 
-Pass environment variables from your shell before running Docker Compose if you want OpenAI enabled:
+Pass environment variables from your shell before running Docker Compose if you want Google AI Studio enabled:
 
 ```bash
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-5-mini
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ## Kubernetes
@@ -83,10 +83,10 @@ kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
 ```
 
-Optional secret for OpenAI:
+Optional secret for Google AI Studio:
 
 ```bash
-kubectl create secret generic devpulse-secrets --from-literal=OPENAI_API_KEY=your_openai_api_key_here
+kubectl create secret generic devpulse-secrets --from-literal=GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ## Environment variables
@@ -97,8 +97,8 @@ kubectl create secret generic devpulse-secrets --from-literal=OPENAI_API_KEY=you
 - `NODE_ENV`
 - `CORS_ORIGIN`
 - `JSON_LIMIT`
-- `OPENAI_API_KEY`
-- `OPENAI_MODEL`
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL`
 
 ### Frontend
 
@@ -111,4 +111,4 @@ This is optional for local development. The CRA dev server proxies `/api` to the
 - The frontend container is built as static assets and served by Nginx
 - Nginx proxies `/api` requests to the backend service
 - The backend exposes readiness-friendly status metadata at `/api/status`
-- When OpenAI is unavailable, the response includes a fallback reason so operators can see why AI inference was skipped
+- When Google AI Studio is unavailable, the response includes a fallback reason so operators can see why AI inference was skipped

@@ -26,13 +26,13 @@ spec:
               value: 1mb
             - name: CORS_ORIGIN
               value: "*"
-            - name: OPENAI_MODEL
-              value: gpt-5-mini
-            - name: OPENAI_API_KEY
+            - name: GEMINI_MODEL
+              value: gemini-2.5-flash
+            - name: GEMINI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: devpulse-secrets
-                  key: OPENAI_API_KEY
+                  key: GEMINI_API_KEY
                   optional: true
           readinessProbe:
             httpGet:

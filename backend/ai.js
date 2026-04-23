@@ -1,5 +1,6 @@
-const ANALYZER_VERSION = "2026-04-23.3";
-const DEFAULT_OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-5-mini";
+const ANALYZER_VERSION = "2026-04-23.4";
+const DEFAULT_GEMINI_MODEL =
+  process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 const SEVERITY_RANK = {
   high: 3,
@@ -250,7 +251,7 @@ const ANALYSIS_RULES = [
   }
 ];
 
-const OPENAI_ANALYSIS_SCHEMA = {
+const GEMINI_ANALYSIS_SCHEMA = {
   type: "object",
   additionalProperties: false,
   required: [
@@ -339,7 +340,7 @@ const OPENAI_ANALYSIS_SCHEMA = {
   }
 };
 
-const OPENAI_SYSTEM_PROMPT = `
+const GEMINI_SYSTEM_INSTRUCTION = `
 You analyze application logs and stack traces.
 
 Return only issues that are directly supported by the provided text.
@@ -358,7 +359,21 @@ Set categories to the distinct categories represented in issues.
 If there is no clear issue, return issueCount 0 and leave issues as an empty array.
 `.trim();
 
-let openaiClientPromise;
+let geminiClientPromise;
+
+function getGeminiApiKey() {
+  const apiKey = (process.env.GEMINI_API_KEY || "").trim();
+
+  if (!apiKey || apiKey === "your_gemini_api_key_here") {
+    return "";
+  }
+
+  return apiKey;
+}
+
+function isGeminiConfigured() {
+  return Boolean(getGeminiApiKey());
+}
 
 function getNonEmptyLines(logs) {
   return logs
@@ -597,20 +612,22 @@ function analyzeLogsWithRules(logs, metadata = {}) {
   return buildResponse(matchedIssues, null, metadata);
 }
 
-async function getOpenAIClient() {
-  if (!process.env.OPENAI_API_KEY) {
+async function getGeminiClient() {
+  const apiKey = getGeminiApiKey();
+
+  if (!apiKey) {
     return null;
   }
 
-  if (!openaiClientPromise) {
-    openaiClientPromise = import("openai").then(({ default: OpenAI }) => {
-      return new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY
+  if (!geminiClientPromise) {
+    geminiClientPromise = import("@google/genai").then(({ GoogleGenAI }) => {
+      return new GoogleGenAI({
+        apiKey
       });
     });
   }
 
-  return openaiClientPromise;
+  return geminiClientPromise;
 }
 
 function safeJsonParse(value) {
@@ -621,7 +638,7 @@ function safeJsonParse(value) {
   }
 }
 
-function normalizeOpenAIResponse(parsed, model) {
+function normalizeGeminiResponse(parsed, model) {
   const issues = sanitizeIssues(parsed?.issues);
   const primaryIssue = issues[0];
   const categories = [...new Set(issues.map((issue) => issue.category))];
@@ -656,7 +673,7 @@ function normalizeOpenAIResponse(parsed, model) {
             : []
       },
       {
-        engine: "openai",
+        engine: "google_ai_studio",
         model
       }
     );
@@ -664,7 +681,7 @@ function normalizeOpenAIResponse(parsed, model) {
 
   return {
     analyzerVersion: ANALYZER_VERSION,
-    engine: "openai",
+    engine: "google_ai_studio",
     model,
     fallbackReason: null,
     issueCount: issues.length,
@@ -705,67 +722,47 @@ async function analyzeLogs(logs) {
     });
   }
 
-  const client = await getOpenAIClient();
+  const client = await getGeminiClient();
 
   if (!client) {
     return analyzeLogsWithRules(cleanedLogs, {
       engine: "rule_fallback",
       model: null,
-      fallbackReason: "OPENAI_API_KEY is not set on the backend."
+      fallbackReason: "GEMINI_API_KEY is not set on the backend."
     });
   }
 
   try {
-    const response = await client.responses.create({
-      model: DEFAULT_OPENAI_MODEL,
-      input: [
-        {
-          role: "system",
-          content: [
-            {
-              type: "input_text",
-              text: OPENAI_SYSTEM_PROMPT
-            }
-          ]
-        },
-        {
-          role: "user",
-          content: [
-            {
-              type: "input_text",
-              text: `Analyze these logs and detect multiple issues separately when needed:\n\n${cleanedLogs}`
-            }
-          ]
-        }
-      ],
-      text: {
-        format: {
-          type: "json_schema",
-          name: "log_analysis",
-          strict: true,
-          schema: OPENAI_ANALYSIS_SCHEMA
-        }
+    const response = await client.models.generateContent({
+      model: DEFAULT_GEMINI_MODEL,
+      contents: `Analyze these logs and detect multiple issues separately when needed:\n\n${cleanedLogs}`,
+      config: {
+        systemInstruction: GEMINI_SYSTEM_INSTRUCTION,
+        responseMimeType: "application/json",
+        responseSchema: GEMINI_ANALYSIS_SCHEMA,
+        temperature: 0.1
       }
     });
 
-    const parsed = safeJsonParse(response.output_text);
+    const parsed = safeJsonParse(response.text);
 
     if (!parsed) {
       return analyzeLogsWithRules(cleanedLogs, {
         engine: "rule_fallback",
-        model: DEFAULT_OPENAI_MODEL,
+        model: DEFAULT_GEMINI_MODEL,
         fallbackReason:
-          "The OpenAI response did not contain parseable structured JSON."
+          "The Google AI Studio response did not contain parseable structured JSON."
       });
     }
 
-    return normalizeOpenAIResponse(parsed, DEFAULT_OPENAI_MODEL);
+    return normalizeGeminiResponse(parsed, DEFAULT_GEMINI_MODEL);
   } catch (error) {
     return analyzeLogsWithRules(cleanedLogs, {
       engine: "rule_fallback",
-      model: DEFAULT_OPENAI_MODEL,
+      model: DEFAULT_GEMINI_MODEL,
       fallbackReason:
-        error?.message || "The OpenAI API request failed, so the rule fallback was used."
+        error?.message ||
+        "The Google AI Studio request failed, so the rule fallback was used."
     });
   }
 }
@@ -774,5 +771,6 @@ module.exports = {
   analyzeLogs,
   analyzeLogsWithRules,
   ANALYZER_VERSION,
-  DEFAULT_OPENAI_MODEL
+  DEFAULT_GEMINI_MODEL,
+  isGeminiConfigured
 };

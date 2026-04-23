@@ -170,13 +170,15 @@ function Dashboard() {
             <div className="hero-metrics">
               <div className="metric">
                 <span className="metric-value">
-                  {status.data?.openaiConfigured ? "AI Live" : "Fallback Ready"}
+                  {status.data?.providerConfigured
+                    ? "AI Studio Live"
+                    : "Fallback Ready"}
                 </span>
                 <span className="metric-label">Inference mode</span>
               </div>
               <div className="metric">
                 <span className="metric-value">
-                  {status.data?.defaultModel || "gpt-5-mini"}
+                  {status.data?.defaultModel || "gemini-2.5-flash"}
                 </span>
                 <span className="metric-label">Default model</span>
               </div>
@@ -221,9 +223,13 @@ function Dashboard() {
                 </span>
               </div>
               <div className="status-item">
-                <span className="status-label">OpenAI</span>
+                <span className="status-label">
+                  {status.data?.provider || "Google AI Studio"}
+                </span>
                 <span className="status-value">
-                  {status.data?.openaiConfigured ? "Configured" : "Not configured"}
+                  {status.data?.providerConfigured
+                    ? "Configured"
+                    : "Not configured"}
                 </span>
               </div>
               <div className="status-item">
@@ -234,10 +240,10 @@ function Dashboard() {
               </div>
             </div>
 
-            {!status.loading && !status.data?.openaiConfigured && (
+            {!status.loading && !status.data?.providerConfigured && (
               <p className="status-note">
-                OpenAI is not configured yet, so the product will use its local
-                fallback analyzer until you add `OPENAI_API_KEY`.
+                Google AI Studio is not configured yet, so the product will use
+                its local fallback analyzer until you add `GEMINI_API_KEY`.
               </p>
             )}
           </aside>

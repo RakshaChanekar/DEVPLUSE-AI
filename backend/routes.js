@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   analyzeLogs,
   ANALYZER_VERSION,
-  DEFAULT_OPENAI_MODEL
+  DEFAULT_GEMINI_MODEL,
+  isGeminiConfigured
 } = require("./ai");
 
 router.get("/status", (req, res) => {
@@ -11,8 +12,9 @@ router.get("/status", (req, res) => {
     status: "Running",
     uptime: process.uptime(),
     analyzerVersion: ANALYZER_VERSION,
-    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
-    defaultModel: DEFAULT_OPENAI_MODEL,
+    provider: "Google AI Studio",
+    providerConfigured: isGeminiConfigured(),
+    defaultModel: DEFAULT_GEMINI_MODEL,
     environment: process.env.NODE_ENV || "development"
   });
 });
