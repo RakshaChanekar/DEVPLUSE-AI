@@ -1,0 +1,5 @@
+
+> backend:start
+> node backend/server.js
+
+DevPulse backend running on port 5000

@@ -28,6 +28,8 @@ spec:
               value: "*"
             - name: GEMINI_MODEL
               value: gemini-2.5-flash
+            - name: MONITORING_STREAM_INTERVAL_MS
+              value: "4000"
             - name: GEMINI_API_KEY
               valueFrom:
                 secretKeyRef:

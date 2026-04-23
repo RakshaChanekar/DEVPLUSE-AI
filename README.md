@@ -1,12 +1,15 @@
 # DevPulse AI
 
-DevPulse AI is a log analysis product that turns raw application logs, stack traces, and deployment failures into structured issue reports. It supports multi-issue detection, Google AI Studio powered analysis, and a local fallback engine when no API key is configured.
+DevPulse AI is a reliability operations product that turns raw application logs, stack traces, and deployment failures into structured issue reports. It now includes real-time monitoring, an AI-backed scoring system, and predictive failure detection alongside the existing multi-issue log analyzer.
 
 ## What is included
 
 - Polished React dashboard for issue triage
 - Express backend with Google AI Studio Gemini integration
 - Rule-based fallback analyzer when Google AI Studio is unavailable
+- Real-time monitoring snapshot and event stream endpoints
+- AI-enriched operational scorecard for stability and failure probability
+- Predictive failure detection for saturation, restart, and dependency risks
 - Docker setup for frontend and backend
 - Kubernetes manifests for frontend and backend deployments
 
@@ -55,6 +58,10 @@ Frontend: `http://localhost:3000`
 
 Backend status: `http://localhost:5000/api/status`
 
+Monitoring snapshot: `http://localhost:5000/api/monitoring/snapshot`
+
+Monitoring stream: `http://localhost:5000/api/monitoring/stream`
+
 ## Docker
 
 Run the full stack:
@@ -99,6 +106,7 @@ kubectl create secret generic devpulse-secrets --from-literal=GEMINI_API_KEY=you
 - `JSON_LIMIT`
 - `GEMINI_API_KEY`
 - `GEMINI_MODEL`
+- `MONITORING_STREAM_INTERVAL_MS`
 
 ### Frontend
 
@@ -110,5 +118,14 @@ This is optional for local development. The CRA dev server proxies `/api` to the
 
 - The frontend container is built as static assets and served by Nginx
 - Nginx proxies `/api` requests to the backend service
+- Nginx disables proxy buffering for `/api` so the monitoring SSE stream stays real time
 - The backend exposes readiness-friendly status metadata at `/api/status`
 - When Google AI Studio is unavailable, the response includes a fallback reason so operators can see why AI inference was skipped
+
+## API additions
+
+- `GET /api/monitoring/snapshot` returns the latest monitoring snapshot, scorecard, and predictions
+- `GET /api/monitoring/stream` streams live monitoring updates over Server-Sent Events
+- `POST /api/score` evaluates the current payload and returns the operational scorecard
+- `POST /api/predict` returns score plus predicted failure scenarios
+- `POST /api/insights` returns issue analysis, monitoring context, scorecard, and predictions in one response
