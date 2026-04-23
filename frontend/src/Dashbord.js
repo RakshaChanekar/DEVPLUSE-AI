@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || "").replace(
-  /\/$/,
-  ""
-);
+function resolveApiBaseUrl() {
+  const configuredBaseUrl = (process.env.REACT_APP_API_BASE_URL || "").replace(
+    /\/$/,
+    ""
+  );
+
+  if (configuredBaseUrl) {
+    return configuredBaseUrl;
+  }
+
+  if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+    return `http://${window.location.hostname}:5000`;
+  }
+
+  return "";
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 const SAMPLE_LOGS = [
   {
