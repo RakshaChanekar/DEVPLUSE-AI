@@ -1,22 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const { analyzeLogs } = require("./ai");
+const {
+  analyzeLogs,
+  ANALYZER_VERSION,
+  DEFAULT_OPENAI_MODEL
+} = require("./ai");
 
 router.get("/status", (req, res) => {
-  res.json({ status: "Running", uptime: process.uptime() });
+  res.json({
+    status: "Running",
+    uptime: process.uptime(),
+    analyzerVersion: ANALYZER_VERSION,
+    openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+    defaultModel: DEFAULT_OPENAI_MODEL,
+    environment: process.env.NODE_ENV || "development"
+  });
 });
 
-router.post("/analyze", (req, res) => {
-  const logs = req.body.logs;
+router.post("/analyze", async (req, res) => {
+  const logs = typeof req.body.logs === "string" ? req.body.logs : "";
 
-  if (!logs) {
-    return res.status(400).json({
-      issue: "No logs provided",
-      suggestion: "Paste logs before analyzing"
-    });
+  const result = await analyzeLogs(logs);
+
+  if (!logs.trim()) {
+    return res.status(400).json(result);
   }
 
-  const result = analyzeLogs(logs);
   res.json(result);
 });
 

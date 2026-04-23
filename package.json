@@ -1,5 +1,13 @@
 {
+  "scripts": {
+    "backend": "nodemon backend/server.js",
+    "backend:start": "node backend/server.js",
+    "frontend": "npm start --prefix frontend"
+  },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "openai": "^6.34.0"
   }
 }
