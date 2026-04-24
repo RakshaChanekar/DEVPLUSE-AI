@@ -4,25 +4,40 @@ import axios from "axios";
 const ROUTE_MISSING_ERROR =
   "The backend is reachable, but this route is missing. Restart the backend so it picks up the latest API endpoints.";
 
-function resolveApiBaseUrl() {
-  const configuredBaseUrl = (process.env.REACT_APP_API_BASE_URL || "").replace(
-    /\/$/,
-    ""
-  );
+function isLoopbackHostname(hostname) {
+  const normalizedHostname = String(hostname || "")
+    .toLowerCase()
+    .replace(/^\[(.*)\]$/, "$1");
 
-  if (configuredBaseUrl) {
-    return configuredBaseUrl;
+  return (
+    normalizedHostname === "localhost" ||
+    normalizedHostname === "127.0.0.1" ||
+    normalizedHostname === "::1" ||
+    normalizedHostname.endsWith(".localhost")
+  );
+}
+
+function shouldUseProxyApiBase(configuredBaseUrl) {
+  if (!configuredBaseUrl || typeof window === "undefined") {
+    return false;
   }
 
-  if (typeof window !== "undefined") {
-    const { protocol, hostname, port } = window.location;
+  try {
+    const parsedBaseUrl = new URL(configuredBaseUrl, window.location.origin);
 
-    if (
-      (hostname === "localhost" || hostname === "127.0.0.1") &&
-      port === "3000"
-    ) {
-      return `${protocol}//${hostname}:5000`;
-    }
+    return isLoopbackHostname(parsedBaseUrl.hostname);
+  } catch (error) {
+    return false;
+  }
+}
+
+function resolveApiBaseUrl() {
+  const configuredBaseUrl = (process.env.REACT_APP_API_BASE_URL || "")
+    .trim()
+    .replace(/\/$/, "");
+
+  if (configuredBaseUrl && !shouldUseProxyApiBase(configuredBaseUrl)) {
+    return configuredBaseUrl;
   }
 
   return "";
