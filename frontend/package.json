@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "postinstall": "node ../scripts/patch-spdy-deprecation.js"
   },
   "proxy": "http://localhost:5000",
   "browserslist": {
