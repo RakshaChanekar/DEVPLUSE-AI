@@ -3,7 +3,7 @@ const { analyzeLogsWithRules } = require("./ai");
 const MONITORING_VERSION = "2026-04-23.1";
 const STREAM_INTERVAL_MS = getBoundedInteger(
   process.env.MONITORING_STREAM_INTERVAL_MS,
-  4000,
+  5000,
   1000,
   30000
 );
