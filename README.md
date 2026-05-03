@@ -129,3 +129,7 @@ This is optional for local development. The CRA dev server proxies `/api` to the
 - `POST /api/score` evaluates the current payload and returns the operational scorecard
 - `POST /api/predict` returns score plus predicted failure scenarios
 - `POST /api/insights` returns issue analysis, monitoring context, scorecard, and predictions in one response
+
+  ## Articture diagram
+  <img width="1058" height="700" alt="image" src="https://github.com/user-attachments/assets/8bad85cf-6046-426c-9cb0-6cbe0b9a1faa" />
+
